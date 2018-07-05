@@ -7,6 +7,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\Module;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\FullTextSearch\Search\FullTextSearch;
+use SilverStripe\FullTextSearch\Solr\Services\Solr5Service;
 use SilverStripe\FullTextSearch\Solr\Services\Solr4Service;
 use SilverStripe\FullTextSearch\Solr\Services\Solr3Service;
 
@@ -85,8 +86,13 @@ class Solr
         /** @var Module $module */
         $module = ModuleLoader::getModule('silverstripe/fulltextsearch');
         $modulePath = $module->getPath();
-
-        if (version_compare($version, '4', '>=')) {
+        if (version_compare($version, '5', '>=')) {
+            $versionDefaults = array(
+                'service' => Solr5Service::class,
+                'extraspath' => $modulePath . '/conf/solr/5/extras/',
+                'templatespath' => $modulePath . '/conf/solr/5/templates/',
+            );
+        } elseif (version_compare($version, '4', '>=')) {
             $versionDefaults = [
                 'service'       => Solr4Service::class,
                 'extraspath'    => $modulePath . '/conf/solr/4/extras/',
